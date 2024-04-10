@@ -18,9 +18,9 @@ class Funcionario(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
     nome_empresa = models.CharField(max_length=255, null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        self.senha = make_password(self.senha)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.senha = make_password(self.senha)
+    #     super().save(*args, **kwargs) #-- criptografia da senha
 
 # se for tipo ADM criar super, se tipo FUNC tipo comum
 # FUNC = funcionário
