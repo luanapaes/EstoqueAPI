@@ -126,3 +126,12 @@ def editar_funcionario(request, funcionario_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ---------------------------------------------------------------------------------------------------------------------
+@api_view(['DELETE'])
+def excluir_funcionario(request, funcionario_id):
+    try:
+        funcionario = Funcionario.objects.get(pk=funcionario_id) # verifica se o funcionário existe pelo ID
+    except Funcionario.DoesNotExist:
+        return Response({'mensagem': 'Funcionário não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    funcionario.delete()
+    return Response({'mensagem': 'Funcionário excluído com sucesso.'}, status=status.HTTP_204_NO_CONTENT)
