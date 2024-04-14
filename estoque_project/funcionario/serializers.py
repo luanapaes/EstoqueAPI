@@ -7,7 +7,7 @@ class FuncionarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Funcionario
-        fields = ('id', 'nome', 'email', 'tipo', 'nome_empresa')
+        fields = ('id', 'nome', 'email', 'senha', 'tipo', 'nome_empresa')
         read_only_fields = ('empresa',)  # torna o campo apenas leitura
 
     def validate_nome_empresa(self, value):

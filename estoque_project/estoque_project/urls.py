@@ -6,6 +6,9 @@ from rest_framework import routers
 from empresa.views import EmpresaViewSet
 from funcionario.views import FuncionarioViewSet
 from funcionario.views import cadastrar_funcionario
+from funcionario.views import fazer_login
+from funcionario.views import editar_funcionario
+from funcionario.views import excluir_funcionario
 from empresa.views import cadastrar_empresa
 from produto.views import ProdutoViewSet
 
@@ -19,5 +22,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('cadastrar-funcionario/', cadastrar_funcionario,
          name='cadastrar_funcionario'),
-         path('cadastrar-empresa/', cadastrar_empresa, name='cadastrar-empresa')
+    path('cadastrar-empresa/', cadastrar_empresa, name='cadastrar-empresa'),
+    path('login/', fazer_login, name='login'),
+    path('editar-funcionario/<int:funcionario_id>/', editar_funcionario, name='editar-funcionario'),
+    path('excluir-funcionario/<int:funcionario_id>/', excluir_funcionario, name='excluir-funcionario')
 ]
