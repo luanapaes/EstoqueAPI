@@ -81,7 +81,7 @@ def cadastrar_funcionario(request):
 def fazer_login(request):
     if request.method == 'POST':
         email = request.data.get('email')
-        password = request.data.get('senha')
+        password = request.data.get('password')
 
         if not email or not password:
             return Response({'mensagem': 'Email e senha são obrigatórios'}, status=status.HTTP_400_BAD_REQUEST)

@@ -8,3 +8,4 @@ class Produto(models.Model):
     descricao = models.TextField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     categoria = models.CharField(max_length=255)
+    estoque = models.IntegerField()
