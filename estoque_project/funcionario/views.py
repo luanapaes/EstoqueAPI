@@ -1,3 +1,4 @@
+import uuid
 from .serializers import FuncionarioSerializer
 from .models import Funcionario
 from empresa.models import Empresa
@@ -16,17 +17,6 @@ class FuncionarioViewSet(viewsets.ModelViewSet):
     serializer_class = FuncionarioSerializer
 
 # ---------------------------------------------------------------------------------------------
-def generate_unique_username(nome):
-    # Gera um nome de usuário único a partir do nome do funcionário.
-
-    username = nome.lower().replace(' ', '_')
-    i = 1
-    while User.objects.filter(username=username).exists():
-        username = f'{username}_{i}'
-        i += 1
-    return username
-
-# ---------------------------------------------------------------------------------------------
 @api_view(['POST'])
 def cadastrar_funcionario(request):
     serializer = FuncionarioSerializer(data=request.data)
@@ -42,7 +32,7 @@ def cadastrar_funcionario(request):
         # se a empresa existe, associa-a ao funcionário para salvar só depois das validações
         serializer.validated_data['empresa'] = empresa
 
-        # cria uma cópia dos dados do funcionário 
+        # cria uma cópia dos dados do funcionário
         funcionario_data = serializer.validated_data.copy()
 
         # verifica se o email já está cadastrado
@@ -53,23 +43,10 @@ def cadastrar_funcionario(request):
         if funcionario_data['tipo'] not in ['ADM', 'FUNC']:
             return Response({'mensagem': 'Tipo de usuário inválido.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # gera um nome de usuário único com a função
-        username = generate_unique_username(funcionario_data['nome'])
-
-        # cria o usuário
-        user = User.objects.create_user(
-            username=username,
-            email=funcionario_data['email'],
-            password=funcionario_data['senha'],
-        )
-
         # salva o funcionário no banco
         funcionario = serializer.save()
-        if funcionario:
-            # atribui o usuário ao funcionário
-            funcionario.user = user
-            funcionario.save()
 
+        if funcionario:
             return Response({'mensagem': 'Funcionário cadastrado com sucesso.'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'mensagem': 'Falha ao cadastrar funcionário.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -77,6 +54,7 @@ def cadastrar_funcionario(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #---------------------------------------------------------------------------------------------
+
 @api_view(['POST'])
 def fazer_login(request):
     if request.method == 'POST':
@@ -99,6 +77,7 @@ def fazer_login(request):
             return Response({'mensagem': 'E-mail ou senha incorretos'}, status=status.HTTP_401_UNAUTHORIZED)
         
 # -------------------------------------------------------------------------------------------------------------
+
 @api_view(['PUT'])
 def editar_funcionario(request, funcionario_id):
     try:
@@ -126,6 +105,7 @@ def editar_funcionario(request, funcionario_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ---------------------------------------------------------------------------------------------------------------------
+
 @api_view(['DELETE'])
 def excluir_funcionario(request, funcionario_id):
     try:
