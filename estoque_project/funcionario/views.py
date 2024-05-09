@@ -106,12 +106,34 @@ def editar_funcionario(request, funcionario_id):
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+# @api_view(['DELETE'])
+# def excluir_funcionario(request, funcionario_id):
+#     try:
+#         funcionario = Funcionario.objects.get(pk=funcionario_id) # verifica se o funcionário existe pelo ID
+#     except Funcionario.DoesNotExist:
+#         return Response({'mensagem': 'Funcionário não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+#     funcionario.delete()
+#     return Response({'mensagem': 'Funcionário excluído com sucesso.'}, status=status.HTTP_204_NO_CONTENT)
+
+#Agora exclui da tabela auth_user e também da tabela funcionario
 @api_view(['DELETE'])
 def excluir_funcionario(request, funcionario_id):
     try:
-        funcionario = Funcionario.objects.get(pk=funcionario_id) # verifica se o funcionário existe pelo ID
+        # Verifica se o funcionário existe pelo ID
+        funcionario = Funcionario.objects.get(pk=funcionario_id)
     except Funcionario.DoesNotExist:
         return Response({'mensagem': 'Funcionário não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
-    funcionario.delete()
-    return Response({'mensagem': 'Funcionário excluído com sucesso.'}, status=status.HTTP_204_NO_CONTENT)
+    try:
+        # Verifica se o usuário correspondente na tabela auth_user existe e, em seguida, exclui
+        # Acessa o usuário associado ao funcionário
+        user = User.objects.get(email=funcionario.email)
+        if user:
+            user.delete()
+            funcionario.delete()
+
+        return Response({'mensagem': 'Funcionário e usuário excluídos com sucesso.'}, status=status.HTTP_204_NO_CONTENT)
+    except Exception as e:
+        # Lidar com qualquer erro que possa ocorrer durante a exclusão do funcionário e usuário
+        return Response({'mensagem': 'Ocorreu um erro ao excluir o funcionário e/ou usuário.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
